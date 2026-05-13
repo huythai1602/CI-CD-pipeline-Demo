@@ -1,0 +1,9 @@
+{
+  "app_name": "cicd-pipeline-demo",
+  "log_level": "info",
+  "allowed_hosts": ["*"],
+  "features": {
+    "enable_metrics": true,
+    "enable_docs": true
+  }
+}
