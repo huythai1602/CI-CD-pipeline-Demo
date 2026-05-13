@@ -1,0 +1,30 @@
+services:
+  app:
+    build:
+      context: .
+      target: development
+    container_name: myapp-dev
+    ports:
+      - "8000:8000"
+    volumes:
+      # Hot-reload: mount source code for live changes
+      - .:/app
+      # Persistent data storage
+      - app-data:/app/data
+      # Read-only config mount
+      - ./config:/app/config:ro
+    environment:
+      - APP_ENV=development
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+
+volumes:
+  app-data:
+    driver: local

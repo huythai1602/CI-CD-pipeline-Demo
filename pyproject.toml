@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cicd-pipeline-demo"
+version = "1.0.0"
+description = "FastAPI demo app used to build a complete GitHub Actions CI/CD pipeline."
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi==0.115.12",
+    "uvicorn[standard]==0.34.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black==25.1.0",
+    "httpx==0.28.1",
+    "pytest==8.3.5",
+    "pytest-cov==6.1.1",
+    "ruff==0.11.12",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.black]
+line-length = 88
+target-version = ["py310", "py311", "py312"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
