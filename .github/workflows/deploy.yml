@@ -43,11 +43,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Lowercase image name
+        id: lower
+        run: echo "image_name=${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+
       - name: Deploy staging image
         id: deploy
         env:
           DEPLOY_ENV: staging
-          IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          IMAGE: ${{ env.REGISTRY }}/${{ steps.lower.outputs.image_name }}:${{ github.sha }}
           APP_URL: ${{ secrets.STAGING_URL }}
         run: bash scripts/deploy.sh
 
@@ -55,7 +59,7 @@ jobs:
         if: always()
         run: |
           echo "### Staging deployment" >> "$GITHUB_STEP_SUMMARY"
-          echo "- Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Image: ${{ env.REGISTRY }}/${{ steps.lower.outputs.image_name }}:${{ github.sha }}" >> "$GITHUB_STEP_SUMMARY"
           echo "- Status: ${{ steps.deploy.outputs.status || 'failed' }}" >> "$GITHUB_STEP_SUMMARY"
 
   deploy-production:
@@ -77,11 +81,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Lowercase image name
+        id: lower
+        run: echo "image_name=${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+
       - name: Deploy production image
         id: deploy
         env:
           DEPLOY_ENV: production
-          IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          IMAGE: ${{ env.REGISTRY }}/${{ steps.lower.outputs.image_name }}:${{ github.sha }}
           APP_URL: ${{ secrets.PRODUCTION_URL }}
         run: bash scripts/deploy.sh
 
@@ -89,5 +97,5 @@ jobs:
         if: always()
         run: |
           echo "### Production deployment" >> "$GITHUB_STEP_SUMMARY"
-          echo "- Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Image: ${{ env.REGISTRY }}/${{ steps.lower.outputs.image_name }}:${{ github.sha }}" >> "$GITHUB_STEP_SUMMARY"
           echo "- Status: ${{ steps.deploy.outputs.status || 'failed' }}" >> "$GITHUB_STEP_SUMMARY"
